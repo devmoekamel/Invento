@@ -31,7 +31,7 @@ const Transactions = () => {
           error: "Failed to load Transactions. Please try again!",
         },
         {
-          position: "top-right",
+          position: "top-left",
         }
       );
     }

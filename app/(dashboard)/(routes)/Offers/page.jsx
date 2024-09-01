@@ -43,7 +43,7 @@ const Offers = () => {
         error: "failed to accept The Offer. Please try again!",
       },
       {
-        position: "top-right",
+        position: "top-left",
       }
     );
   };
