@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StockCategories } from "../Data/StockCategories";
 import { useDispatch } from "react-redux";
 import { getIventory, UpdateIventory } from "@/app/store/inventorySlice";
+import toast, { Toaster } from "react-hot-toast";
 
 const UpdateModal = ({ cancelModal }) => {
   const dispatch = useDispatch();
@@ -28,14 +29,35 @@ const UpdateModal = ({ cancelModal }) => {
       setIsInitialized(true);
     }
   }, [isInitialized]);
+
   const HandleUpdate = () => {
-    dispatch(UpdateIventory({ token, data: formData }))
-      .then(dispatch(getIventory(token)))
-      .then(cancelModal());
+    const updateInventoryPromise = dispatch(
+      UpdateIventory({ token, data: formData })
+    )
+      .unwrap()
+      .then(() => dispatch(getIventory(token)))
+      .then(
+        setTimeout(() => {
+          cancelModal(); // Close the modal after 2 seconds
+        }, 2000)
+      );
+
+    toast.promise(
+      updateInventoryPromise,
+      {
+        loading: "Updating inventory...",
+        success: "Inventory updated successfully!",
+        error: "Update failed. Please try again!",
+      },
+      {
+        position: "top-right",
+      }
+    );
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+      <Toaster /> {/* This will render toast notifications */}
       <div className=" bg-white border shadow-lg rounded-lg w-96 p-6">
         <h1 className="text-2xl font-bold">Update Stock</h1>
         <form>

@@ -1,6 +1,7 @@
 "use client";
 import { getAllTransaction } from "@/app/store/transactionSlice";
 import React, { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 
 const Transactions = () => {
@@ -21,12 +22,24 @@ const Transactions = () => {
 
   useEffect(() => {
     if (token) {
-      dispatch(getAllTransaction(token));
+      const transactionsPromise = dispatch(getAllTransaction(token)).unwrap();
+      toast.promise(
+        transactionsPromise,
+        {
+          loading: "Loading Transactions...",
+          success: "Transactions loaded successfully!",
+          error: "Failed to load Transactions. Please try again!",
+        },
+        {
+          position: "top-right",
+        }
+      );
     }
   }, [token, dispatch]);
   transactions;
   return (
     <div className="p-4">
+      <Toaster />
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 bg-white text-sm border border-gray-300">
           <thead className="bg-gray-50">

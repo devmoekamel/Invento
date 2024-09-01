@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerFunc } from "@/app/store/userSlice";
+import toast, { Toaster } from "react-hot-toast";
 
 const Register = () => {
   const router = useRouter();
@@ -22,7 +23,20 @@ const Register = () => {
       return;
     } else {
       setAlert(""); // Clear any previous alerts
-      dispatch(registerFunc({ username, email, password }));
+      const registerPromise = dispatch(
+        registerFunc({ username, email, password })
+      ).unwrap();
+      toast.promise(
+        loginPromise,
+        {
+          loading: "Loading...",
+          success: "You logged in successfully!",
+          error: "Login failed!",
+        },
+        {
+          position: "top-right",
+        }
+      );
     }
   };
 
@@ -34,6 +48,7 @@ const Register = () => {
 
   return (
     <div>
+      <Toaster />
       <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-lg">
           <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">

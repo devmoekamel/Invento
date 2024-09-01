@@ -3,29 +3,41 @@ import { loginFunc } from "@/app/store/userSlice";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 
 const Login = () => {
   const [username, setUsername] = useState("");
-  const [password, setpassword] = useState("");
+  const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const { success, error, loading, token } = useSelector((state) => state.user);
   const [alert, setAlert] = useState("");
   const router = useRouter();
 
-  const handlesumbit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!username || !password) {
       setAlert("All fields are required!");
       return;
     } else {
       setAlert("");
-      dispatch(loginFunc({ username, password }));
+      const loginPromise = dispatch(loginFunc({ username, password })).unwrap();
+
+      toast.promise(
+        loginPromise,
+        {
+          loading: "Loading...",
+          success: "You logged in successfully!",
+          error: "Login failed!",
+        },
+        {
+          position: "top-right",
+        }
+      );
     }
   };
 
   useEffect(() => {
-    success;
     if (success && token) {
       router.replace("/Inventory");
     }
@@ -33,6 +45,7 @@ const Login = () => {
 
   return (
     <div>
+      <Toaster />
       <div className="my-16 flex justify-center items-center">
         <h1 className="text-4xl font-bold text-gray-400">Login</h1>
       </div>
@@ -43,8 +56,7 @@ const Login = () => {
           </div>
           <div className="">
             <form
-              onSubmit={handlesumbit}
-              action="#"
+              onSubmit={handleSubmit}
               className="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
             >
               <p className="text-center text-lg font-medium">
@@ -83,7 +95,7 @@ const Login = () => {
 
                 <div className="relative">
                   <input
-                    onChange={(e) => setpassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                     type="password"
                     className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                     placeholder="Enter password"

@@ -4,6 +4,7 @@ import { StockCategories } from "../Inventory/Data/StockCategories";
 import { useDispatch, useSelector } from "react-redux";
 import { createOffer } from "@/app/store/offerSlice";
 import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 
 const CreateOffer = () => {
   const dispatch = useDispatch();
@@ -29,12 +30,23 @@ const CreateOffer = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(createOffer({ token, data: offer })).then(
+    const createofferPromise =  dispatch(createOffer({ token, data: offer })).unwrap();
+    toast.promise(
+      createofferPromise,
+      {
+        loading: "Creating offer...",
+        success: "Offer created successfully!",
+        error: "Failed to create offer. Please try again!",
+      },
+      {
+        position: "top-right",
+      }
     );
   };
 
   return (
     <div className="m-16 container mx-auto">
+      <Toaster/>
       <div className="my-7 flex justify-center items-center">
         <h1 className="text-3xl font-bold">Create Offer</h1>
       </div>

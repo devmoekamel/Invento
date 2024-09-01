@@ -1,6 +1,7 @@
 "use client";
 import { AcceptUserOffer, getAllOffers } from "@/app/store/offerSlice";
 import React, { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 const Offers = () => {
   const { offers } = useSelector((state) => state.offer);
@@ -26,18 +27,30 @@ const Offers = () => {
 
   const AcceptOffer = (offerid) => {
     // console.log(offerid);
-    dispatch(AcceptUserOffer({ token, data: { offerId: offerid } }))
+    const AcceptOfferPromise = dispatch(
+      AcceptUserOffer({ token, data: { offerId: offerid } })
+    )
+      .unwrap()
       .then(() => {
         // Re-fetch offers list after successfully accepting an offer
         dispatch(getAllOffers(token));
-      })
-      .catch((error) => {
-        console.error("Failed to accept the offer:", error);
       });
+    toast.promise(
+      AcceptOfferPromise,
+      {
+        loading: "Accepting Offer...",
+        success: "Offer Accepted successfully!",
+        error: "failed to accept The Offer. Please try again!",
+      },
+      {
+        position: "top-right",
+      }
+    );
   };
 
   return (
     <div className="p-4">
+      <Toaster />
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 bg-white text-sm border border-gray-300">
           <thead className="bg-gray-50">
