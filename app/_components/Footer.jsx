@@ -14,7 +14,7 @@ function Footer() {
             </span>
             By
             <span className="text-blue-700 hover:text-rose-700 duration-700">
-              <a href="https://github.com/devmoekamel"> Mohamed Kamel</a>
+              <a href="#"> Mohamed Kamel</a>
             </span>
           </h1>
         </div>
